@@ -25,6 +25,7 @@ func main() {
 	fmt.Println("-----Successfully connected to the MySQL databse")
 
 	getRows(db)
+	preparedStatement(db)
 }
 
 func getRows(db *sql.DB) {
@@ -33,6 +34,30 @@ func getRows(db *sql.DB) {
 		log.Fatal(err)
 	}
 
+	for results.Next() {
+		var client Client
+
+		err = results.Scan(&client.Name)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		fmt.Println("Client name=" + client.Name)
+	}
+}
+
+func preparedStatement(db *sql.DB) {
+	fmt.Println("-----Prepared statement")
+	stmt, err := db.Prepare("SELECT name FROM bank.clients WHERE id = ?")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer stmt.Close()
+
+	results, err := stmt.Query(1)
+	if err != nil {
+		log.Fatal(err)
+	}
 	for results.Next() {
 		var client Client
 

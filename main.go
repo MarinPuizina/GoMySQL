@@ -29,6 +29,7 @@ func main() {
 }
 
 func getRows(db *sql.DB) {
+	fmt.Println("-----Get rows from database")
 	results, err := db.Query("SELECT name FROM bank.clients")
 	if err != nil {
 		log.Fatal(err)

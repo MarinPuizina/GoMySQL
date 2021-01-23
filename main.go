@@ -24,6 +24,7 @@ func main() {
 
 	fmt.Println("-----Successfully connected to the MySQL databse")
 
+	insertData(db)
 	getRows(db)
 	preparedStatement(db)
 }
@@ -48,7 +49,7 @@ func getRows(db *sql.DB) {
 }
 
 func preparedStatement(db *sql.DB) {
-	fmt.Println("-----Prepared statement")
+	fmt.Println("-----Select prepared statement")
 	stmt, err := db.Prepare("SELECT name FROM bank.clients WHERE id = ?")
 	if err != nil {
 		log.Fatal(err)
@@ -69,4 +70,14 @@ func preparedStatement(db *sql.DB) {
 
 		fmt.Println("Client name=" + client.Name)
 	}
+}
+
+func insertData(db *sql.DB) {
+	fmt.Println("-----Insert prepared statement")
+	stmt, err := db.Prepare("INSERT INTO bank.clients(department,name) VALUES(?,?)")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	stmt.Exec("IT", "john")
 }

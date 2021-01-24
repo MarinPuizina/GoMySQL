@@ -80,4 +80,7 @@ func insertData(db *sql.DB) {
 	}
 
 	stmt.Exec("IT", "john")
+	if err != nil {
+		log.Fatal(err)
+	}
 }

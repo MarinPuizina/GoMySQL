@@ -24,7 +24,8 @@ func main() {
 
 	fmt.Println("-----Successfully connected to the MySQL databse")
 
-	insertData(db)
+	//insertData(db)
+	//transaction(db)
 	getRows(db)
 	preparedStatement(db)
 }
@@ -80,6 +81,33 @@ func insertData(db *sql.DB) {
 	}
 
 	stmt.Exec("IT", "john")
+	if err != nil {
+		log.Fatal(err)
+	}
+}
+
+func transaction(db *sql.DB) {
+	fmt.Println("-----Transaction - Insert prepared statement")
+	tx, err := db.Begin()
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer tx.Rollback()
+
+	stmt, err := tx.Prepare("INSERT INTO bank.clients(department,name) VALUES(?,?)")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer stmt.Close()
+
+	for i := 0; i < 10; i++ {
+		_, err = stmt.Exec("Tx", "Lucio")
+		if err != nil {
+			log.Fatal(err)
+		}
+	}
+
+	err = tx.Commit()
 	if err != nil {
 		log.Fatal(err)
 	}
